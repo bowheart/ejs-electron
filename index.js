@@ -89,7 +89,6 @@ function stopListening() {
 
 // Helper Functions
 function compileEjs(pathname, contentBuffer) {
-	state.data.filename = pathname
 	state.data.ejse = EjsElectron
 	state.options.filename = pathname
 
