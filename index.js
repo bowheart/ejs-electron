@@ -100,10 +100,10 @@ function compileEjs(pathname, contentBuffer) {
 
 
 function parsePathname(reqUrl) {
-	let parsedUrl = url.parse(reqUrl)
-	let pathname = decodeURIComponent(parsedUrl.pathname)
+	let parsed = url.parse(reqUrl)
+	let pathname = parsed.pathname
 
-	if (process.platform === 'win32' && !parsedUrl.host.trim()) {
+	if (process.platform === 'win32' && !parsed.host.trim()) {
 		pathname = pathname.substr(1)
 	}
 	return pathname
