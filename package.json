@@ -1,6 +1,6 @@
 {
   "name": "ejs-electron",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A lightweight module for ejs templating in an electronJS app.",
   "main": "index.js",
   "scripts": {},
