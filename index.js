@@ -115,7 +115,7 @@ function protocolListener(request, callback) {
 		let pathname = parsePathname(request.url)
         let fileContents = fs.readFileSync(pathname)
         let extension = path.extname(pathname)
-        let mimeType = mime.lookup(extension)
+        let mimeType = mime.getType(extension)
 
         if (extension === '.ejs') {
             fileContents = compileEjs(pathname, fileContents)
