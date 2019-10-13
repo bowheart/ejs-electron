@@ -135,6 +135,12 @@ function protocolListener(request, callback) {
 
 
 function updateState(field, context, key, val) {
+  if (typeof key === 'undefined' && typeof val === 'undefined') {
+    let data = state[field];
+    delete data.ejse;
+    return data
+  }
+
 	if (typeof key === 'string') {
 		if (typeof val === 'undefined') return state[field][key]
 		state[field][key] = val
