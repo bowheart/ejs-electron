@@ -95,7 +95,7 @@ function compileEjs(pathname, contentBuffer) {
     let contentString = contentBuffer.toString()
     let compiledEjs = ejs.render(contentString, state.data, state.options)
 
-    return new Buffer(compiledEjs)
+    return new Buffer.from(compiledEjs)
 }
 
 
