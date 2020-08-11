@@ -36,6 +36,7 @@ const ejse = require('ejs-electron')
 Get/set the data (context) that will be passed to `ejs.render()`.
 
 Overloads:
+- `ejse.data()` -- Retrieve the current data set.
 - `ejse.data('key')` -- Retrieve the value of `'key'` in the current data set.
 - `ejse.data('key', 'val')` -- Set `'key'` to `'val' `in the current data set.
 - `ejse.data({key: 'val'})` -- Replace the current data set with a new one containing `{key: 'val'}`
