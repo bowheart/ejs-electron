@@ -15,7 +15,6 @@ const ejs = require('ejs')
 const fs = require('fs')
 const mime = require('mime')
 const path = require('path')
-const url = require('url')
 
 // Set up local state
 let state = {
@@ -48,7 +47,7 @@ function data(key, val) {
 function listen() {
 	if (state.listening) return EjsElectron // already listening; nothing to do here
 
-	protocol.interceptBufferProtocol('file', protocolListener)
+	protocol.handle('file', protocolListener)
 	state.listening = true
 	return EjsElectron // for chaining
 }
@@ -80,7 +79,7 @@ function options(key, val) {
 function stopListening() {
 	if (!state.listening) return EjsElectron // we're not listening; nothing to stop here
 
-	protocol.uninterceptProtocol('file')
+	protocol.unhandle('file')
 	state.listening = false
 	return EjsElectron
 }
@@ -100,17 +99,17 @@ function compileEjs(pathname, contentBuffer) {
 
 
 function parsePathname(reqUrl) {
-	let parsedUrl = url.parse(reqUrl)
+	let parsedUrl = new URL(reqUrl)
 	let pathname = decodeURIComponent(parsedUrl.pathname)
 
 	if (process.platform === 'win32' && !parsedUrl.host.trim()) {
-		pathname = pathname.substr(1)
+		pathname = pathname.substring(1)
 	}
 	return pathname
 }
 
 
-function protocolListener(request, callback) {
+function protocolListener(request) {
     try {
 		let pathname = parsePathname(request.url)
         let fileContents = fs.readFileSync(pathname)
@@ -122,14 +121,15 @@ function protocolListener(request, callback) {
             mimeType = 'text/html'
         }
 
-        return callback({
-            data: fileContents,
-            mimeType: mimeType
-        })
+		return new Response(fileContents, {
+			headers: {'Content-Type': mimeType}
+		})
 
     } catch(exception) {
         console.error(exception)
-        return callback(-6) // NET_ERROR(FILE_NOT_FOUND, -6)
+		let options = { status: 500 } // Internal error e.g. ejs compilation error
+		if (exception.code === 'ENOENT') options = { status: 404, statusText: 'Not Found' } // HTTP Error 404 - Not Found
+        return new Response(null, options)
     }
 }
 
